@@ -1,0 +1,781 @@
+[boom beta.html](https://github.com/user-attachments/files/27639506/boom.beta.html)
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boom! — 내가 지금 가는 곳, 얼마나 붐빌까?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F6F5F1;
+  --surface: #FFFFFF;
+  --surface2: #EEEDE9;
+  --border: #E2E0DA;
+  --text: #1A1916;
+  --text2: #6B6860;
+  --text3: #ABA89F;
+  --accent: #1E6B4E;
+  --accent-bg: #E8F5EE;
+  --accent-mid: #3DAA78;
+  --warn: #B85C00;
+  --warn-bg: #FFF0E0;
+  --blue: #1A5FA8;
+  --blue-bg: #E6F0FB;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.10);
+  --font: 'Noto Sans KR', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --display: 'Syne', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+
+/* ── SHELL ── */
+.shell{display:grid;grid-template-columns:220px 1fr;grid-template-rows:56px 1fr;height:100vh;overflow:hidden}
+
+/* ── TOPBAR ── */
+.topbar{grid-column:1/-1;background:var(--text);display:flex;align-items:center;padding:0 20px;gap:10px}
+.topbar-logo{font-family:var(--display);font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px}
+.topbar-logo span{color:var(--accent-mid)}
+.topbar-sub{font-size:12px;color:#777;margin-left:2px}
+.topbar-right{margin-left:auto}
+.profile-pill{display:flex;align-items:center;gap:7px;background:#252520;border-radius:20px;padding:4px 12px 4px 6px}
+.profile-av{width:24px;height:24px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.profile-name{font-size:12px;color:#ccc}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px 12px;display:flex;flex-direction:column;gap:4px;overflow-y:auto}
+.nav-lbl{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;padding:8px 8px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;border:none;background:none;width:100%;text-align:left;font-family:var(--font);transition:all .15s}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--accent-bg);color:var(--accent)}
+.nav-item .ico{font-size:16px;width:20px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;font-family:var(--mono)}
+.sidebar-footer{margin-top:auto;padding:12px 8px 0;border-top:1px solid var(--border)}
+.api-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent-mid);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── MAIN ── */
+.main{overflow-y:auto;display:flex;flex-direction:column}
+.page{display:none;flex-direction:column;height:100%}
+.page.active{display:flex}
+
+/* ── ONBOARD ── */
+.ob-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);padding:40px 20px}
+.ob-card{width:100%;max-width:480px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 36px;box-shadow:var(--shadow-lg)}
+.ob-top{margin-bottom:32px}
+.ob-brand{font-family:var(--display);font-size:42px;font-weight:800;letter-spacing:-1.5px;line-height:1;margin-bottom:8px}
+.ob-brand span{color:var(--accent-mid)}
+.ob-tagline{font-size:15px;color:var(--text2);line-height:1.5}
+.ob-divider{height:1px;background:var(--border);margin:24px 0}
+.ob-q{font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.chip{padding:8px 16px;border-radius:24px;border:1.5px solid var(--border);font-size:13px;cursor:pointer;color:var(--text2);background:var(--bg);transition:all .15s;font-family:var(--font);font-weight:500}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{background:var(--accent-bg);color:var(--accent);border-color:var(--accent);font-weight:700}
+.ob-skip{font-size:12px;color:var(--text3);text-align:center;margin-bottom:12px;cursor:pointer}
+.ob-skip:hover{color:var(--text2)}
+.start-btn{width:100%;padding:15px;border-radius:var(--radius);border:none;background:var(--text);color:#fff;font-size:15px;font-weight:700;cursor:pointer;opacity:.3;transition:all .2s;font-family:var(--font);letter-spacing:-.2px}
+.start-btn.ready{opacity:1}
+.start-btn.ready:hover{background:var(--accent)}
+
+/* ── CHAT ── */
+.chat-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.chat-hdr{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:var(--surface);flex-shrink:0}
+.chat-hdr-ico{width:36px;height:36px;border-radius:10px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:18px}
+.chat-hdr-info h2{font-size:15px;font-weight:700}
+.chat-hdr-info p{font-size:12px;color:var(--text3)}
+.live-chip{margin-left:auto;background:var(--accent-bg);color:var(--accent);font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;display:flex;align-items:center;gap:5px;font-family:var(--mono)}
+.messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+.msg{display:flex;gap:10px;max-width:80%}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg.bot{align-self:flex-start}
+.msg-av{width:30px;height:30px;border-radius:9px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:2px}
+.bubble{padding:11px 15px;border-radius:16px;font-size:14px;line-height:1.75}
+.msg.user .bubble{background:var(--text);color:#fff;border-bottom-right-radius:4px}
+.msg.bot .bubble{background:var(--surface);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:4px;box-shadow:var(--shadow)}
+.typing{display:flex;gap:5px;align-items:center;padding:4px 2px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--text3);animation:bounce 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
+.sugs{display:flex;flex-wrap:wrap;gap:7px;padding:0 20px 10px}
+.sug{padding:7px 13px;border-radius:16px;border:1.5px solid var(--border);font-size:12px;cursor:pointer;color:var(--text2);background:var(--surface);transition:all .15s;font-family:var(--font)}
+.sug:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+.input-row{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:flex-end;background:var(--surface);flex-shrink:0}
+.input-row textarea{flex:1;resize:none;border:1.5px solid var(--border);border-radius:14px;padding:10px 14px;font-size:14px;font-family:var(--font);color:var(--text);background:var(--bg);outline:none;line-height:1.5;min-height:42px;max-height:120px;transition:border-color .15s}
+.input-row textarea:focus{border-color:var(--accent)}
+.send-btn{width:42px;height:42px;border-radius:12px;border:none;background:var(--text);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;transition:all .15s}
+.send-btn:disabled{opacity:.3;cursor:default}
+.send-btn:not(:disabled):hover{background:var(--accent)}
+
+/* ── FEEDBACK ── */
+.fb-page{padding:28px;overflow-y:auto;flex:1}
+.page-hdr{margin-bottom:24px}
+.page-hdr h1{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.page-hdr p{font-size:13px;color:var(--text2);margin-top:4px}
+.fb-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.fb-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.fb-sec-lbl{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.fb-place-prev{font-size:16px;font-weight:700;margin-bottom:16px}
+.fb-q{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text2)}
+.fb-opts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.fb-opt{padding:8px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;cursor:pointer;color:var(--text2);background:var(--bg);transition:all .15s;font-family:var(--font);font-weight:500}
+.fb-opt:hover{border-color:var(--accent)}
+.fb-opt.on{background:var(--accent-bg);color:var(--accent);border-color:var(--accent);font-weight:700}
+.fb-opt.warn.on{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+.stars{display:flex;gap:6px;margin-bottom:16px}
+.star{font-size:26px;cursor:pointer;color:var(--border);transition:color .1s}
+.star.on{color:#F5A623}
+.sel{width:100%;padding:10px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);font-size:14px;font-family:var(--font);color:var(--text);background:var(--bg);outline:none;margin-bottom:16px}
+.sel:focus{border-color:var(--accent)}
+.submit-btn{width:100%;padding:11px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);transition:opacity .15s}
+.submit-btn:hover{opacity:.85}
+.fb-history{margin-top:24px}
+.fb-history h3{font-size:14px;font-weight:700;margin-bottom:12px}
+.fb-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;font-size:13px}
+.fb-row-place{font-weight:700;flex:1}
+.tag{padding:3px 9px;border-radius:8px;font-size:11px;font-weight:700}
+.tag.up{background:var(--warn-bg);color:var(--warn)}
+.tag.same{background:var(--surface2);color:var(--text2)}
+.tag.down{background:var(--accent-bg);color:var(--accent)}
+.fb-ts{color:var(--text3);font-family:var(--mono);font-size:11px}
+
+/* ── DASHBOARD ── */
+.dash-page{padding:28px;overflow-y:auto;flex:1}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.stat-lbl{font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:700;letter-spacing:.5px;margin-bottom:6px}
+.stat-val{font-size:28px;font-weight:700;font-family:var(--mono);letter-spacing:-1px}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.stat-val.green{color:var(--accent)}.stat-val.amber{color:var(--warn)}.stat-val.blue{color:var(--blue)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.panel h3{font-size:14px;font-weight:700;margin-bottom:16px}
+.corr-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.corr-row:last-child{border-bottom:none}
+.corr-place{font-weight:700;flex:1}
+.corr-api{color:var(--text3);font-family:var(--mono);font-size:12px}
+.corr-result{font-weight:700;font-family:var(--mono);font-size:12px}
+.corr-result.up{color:var(--warn)}.corr-result.down{color:var(--accent)}.corr-result.same{color:var(--text2)}
+.trust-wrap{width:60px}
+.trust-bg{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden}
+.trust-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .5s}
+.trust-lbl{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+.chart-wrap{display:flex;flex-direction:column;gap:12px}
+.chart-row-lbl{font-size:12px;color:var(--text2);display:flex;justify-content:space-between;margin-bottom:3px}
+.chart-bar-bg{height:10px;background:var(--surface2);border-radius:5px;overflow:hidden}
+.chart-bar{height:100%;border-radius:5px;transition:width .8s ease}
+.sim-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.sim-box h3{font-size:14px;font-weight:700;margin-bottom:4px}
+.sim-box p{font-size:13px;color:var(--text2);margin-bottom:16px}
+.sim-ctrls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sim-sel{padding:8px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);font-size:13px;font-family:var(--font);color:var(--text);background:var(--bg);outline:none}
+.sim-sel:focus{border-color:var(--accent)}
+.sim-run{padding:8px 16px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)}
+.sim-result{margin-top:14px;padding:14px 16px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);font-size:13px;line-height:1.8;display:none}
+.sim-result.show{display:block}
+.dpill{display:inline-block;padding:2px 8px;border-radius:8px;font-family:var(--mono);font-size:12px;font-weight:700}
+.dpill.pos{background:var(--warn-bg);color:var(--warn)}.dpill.neg{background:var(--accent-bg);color:var(--accent)}.dpill.zero{background:var(--surface2);color:var(--text2)}
+
+/* ADMIN */
+.admin-page{padding:28px;overflow-y:auto;flex:1}
+.admin-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.admin-box h3{font-size:14px;font-weight:700;margin-bottom:4px}
+.admin-box p{font-size:13px;color:var(--text2);margin-bottom:14px}
+.json-area{width:100%;min-height:140px;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-family:var(--mono);font-size:12px;color:var(--text);background:var(--bg);outline:none;resize:vertical;line-height:1.6}
+.json-area:focus{border-color:var(--accent)}
+.admin-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.admin-btn{padding:9px 16px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)}
+.admin-btn.sec{background:var(--surface2);color:var(--text)}
+.admin-msg{font-size:12px;padding:8px 12px;border-radius:var(--radius-sm);margin-top:8px;display:none}
+.admin-msg.ok{background:var(--accent-bg);color:var(--accent);display:block}
+.admin-msg.err{background:var(--warn-bg);color:var(--warn);display:block}
+.corr-table{width:100%;border-collapse:collapse;font-size:13px}
+.corr-table th{text-align:left;padding:8px 12px;background:var(--surface2);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text2)}
+.corr-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
+.corr-table tr:last-child td{border-bottom:none}
+.del-btn{padding:3px 8px;border-radius:6px;border:none;background:var(--warn-bg);color:var(--warn);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)}
+</style>
+</head>
+<body>
+
+<!-- ONBOARD -->
+<div id="ob-wrap" class="ob-wrap">
+  <div class="ob-card">
+    <div class="ob-top">
+      <div class="ob-brand">Boom<span>!</span></div>
+      <p class="ob-tagline">내가 지금 가는 곳, 얼마나 붐빌까?<br>딱 알맞은 타이밍과 장소를 찾아드려요</p>
+    </div>
+    <div class="ob-divider"></div>
+
+    <div class="ob-q">나이대가 어떻게 되세요?</div>
+    <div class="chip-row" id="ob-age">
+      <span class="chip" data-v="10대">10대</span>
+      <span class="chip" data-v="20대">20대</span>
+      <span class="chip" data-v="30대">30대</span>
+      <span class="chip" data-v="40대">40대</span>
+      <span class="chip" data-v="50대+">50대 이상</span>
+    </div>
+
+    <div class="ob-q">성별은요?</div>
+    <div class="chip-row" id="ob-gender">
+      <span class="chip" data-v="남성">남성</span>
+      <span class="chip" data-v="여성">여성</span>
+      <span class="chip" data-v="선택 안 함">선택 안 함</span>
+    </div>
+
+    <div class="ob-q">주로 어떤 나들이를 즐기세요? <span style="color:var(--text3);font-weight:400">(선택사항)</span></div>
+    <div class="chip-row" id="ob-style">
+      <span class="chip" data-v="데이트">💑 데이트</span>
+      <span class="chip" data-v="친구모임">👯 친구 모임</span>
+      <span class="chip" data-v="혼자">🎧 혼자</span>
+      <span class="chip" data-v="가족">👨‍👩‍👧 가족</span>
+      <span class="chip" data-v="맛집탐방">🍜 맛집 탐방</span>
+      <span class="chip" data-v="문화전시">🎨 문화·전시</span>
+      <span class="chip" data-v="쇼핑">🛍️ 쇼핑</span>
+    </div>
+
+    <div class="ob-skip" onclick="skipProfile()">건너뛸게요 →</div>
+    <button class="start-btn" id="start-btn" onclick="startApp()">Boom! 시작하기 💥</button>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div class="shell" id="shell" style="display:none">
+  <div class="topbar">
+    <div class="topbar-logo">Boom<span>!</span></div>
+    <div class="topbar-sub">서울 나들이 도우미</div>
+    <div class="topbar-right">
+      <div class="profile-pill">
+        <div class="profile-av" id="p-av">?</div>
+        <span class="profile-name" id="p-name">게스트</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar">
+    <div class="nav-lbl">메뉴</div>
+    <button class="nav-item active" id="nav-chat" onclick="goPage('chat')"><span class="ico">💬</span> 챗봇</button>
+    <button class="nav-item" id="nav-feedback" onclick="goPage('feedback')"><span class="ico">📝</span> 방문 후기 <span class="nav-badge" id="fb-badge">0</span></button>
+    <button class="nav-item" id="nav-dashboard" onclick="goPage('dashboard')"><span class="ico">📊</span> 보정 대시보드</button>
+    <button class="nav-item" id="nav-admin" onclick="goPage('admin')"><span class="ico">⚙️</span> 관리자</button>
+    <div class="sidebar-footer">
+      <div class="api-status"><div class="status-dot"></div> 웹서치 연결됨</div>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- CHAT -->
+    <div class="page chat-wrap active" id="page-chat">
+      <div class="chat-hdr">
+        <div class="chat-hdr-ico">💥</div>
+        <div class="chat-hdr-info"><h2>Boom! 나들이 도우미</h2><p>혼잡도 · 날씨 · 대안 추천</p></div>
+        <div class="live-chip"><span>●</span> 실시간</div>
+      </div>
+      <div class="messages" id="messages"></div>
+      <div class="sugs" id="sugs">
+        <button class="sug" onclick="useSug(this)">성수동 주말 데이트 어때요?</button>
+        <button class="sug" onclick="useSug(this)">홍대 지금 많이 붐벼?</button>
+        <button class="sug" onclick="useSug(this)">한강 오늘 날씨 어때?</button>
+        <button class="sug" onclick="useSug(this)">강남 토요일 오후 혼잡도</button>
+      </div>
+      <div class="input-row">
+        <textarea id="chat-inp" placeholder="장소와 상황을 편하게 말해보세요..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMsg()" disabled>↑</button>
+      </div>
+    </div>
+
+    <!-- FEEDBACK -->
+    <div class="page fb-page" id="page-feedback">
+      <div class="page-hdr"><h1>방문 후기 남기기</h1><p>실제 체감을 알려주시면 더 정확한 혼잡도 예측에 반영돼요</p></div>
+      <div class="fb-grid">
+        <div class="fb-card">
+          <div class="fb-sec-lbl">방문 장소</div>
+          <select class="sel" id="fb-place" onchange="document.getElementById('fb-prev').textContent=this.value||'장소를 선택해주세요'">
+            <option value="">장소를 선택해주세요</option>
+            <option>성수카페거리</option><option>홍대입구역</option>
+            <option>강남 MICE 관광특구</option><option>명동</option>
+            <option>이태원 관광특구</option><option>여의도한강공원</option>
+            <option>광화문·덕수궁</option><option>잠실 관광특구</option>
+            <option>북촌한옥마을</option><option>인사·익선동</option>
+          </select>
+          <div class="fb-q">실제 얼마나 붐볐나요?</div>
+          <div class="fb-opts" id="fbo-crowd">
+            <button class="fb-opt" data-v="-1">😌 생각보다 한산</button>
+            <button class="fb-opt" data-v="0">😐 예상대로</button>
+            <button class="fb-opt warn" data-v="1">😤 생각보다 붐빔</button>
+          </div>
+          <div class="fb-q">날씨 체감은?</div>
+          <div class="fb-opts" id="fbo-weather">
+            <button class="fb-opt" data-v="-1">🥶 추웠어요</button>
+            <button class="fb-opt" data-v="0">😊 적당했어요</button>
+            <button class="fb-opt" data-v="1">🥵 더웠어요</button>
+          </div>
+        </div>
+        <div class="fb-card">
+          <div class="fb-sec-lbl">만족도</div>
+          <div class="fb-place-prev" id="fb-prev">장소를 선택해주세요</div>
+          <div class="fb-q">전반적인 방문 만족도</div>
+          <div class="stars" id="fb-stars">
+            <span class="star" data-v="1">★</span><span class="star" data-v="2">★</span>
+            <span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span>
+          </div>
+          <div class="fb-q">방문 시간대</div>
+          <div class="fb-opts" id="fbo-time">
+            <button class="fb-opt" data-v="morning">🌅 오전</button>
+            <button class="fb-opt" data-v="afternoon">☀️ 오후</button>
+            <button class="fb-opt" data-v="evening">🌆 저녁</button>
+            <button class="fb-opt" data-v="night">🌙 밤</button>
+          </div>
+          <button class="submit-btn" onclick="submitFb()">후기 제출하기</button>
+        </div>
+      </div>
+      <div class="fb-history">
+        <h3>내가 남긴 후기 <span id="fb-count-lbl" style="color:var(--text3);font-family:var(--mono)">(0건)</span></h3>
+        <div id="fb-list"><p style="color:var(--text3);font-size:13px">아직 남긴 후기가 없어요</p></div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="page dash-page" id="page-dashboard">
+      <div class="page-hdr"><h1>보정 대시보드</h1><p>사용자 피드백이 혼잡도 예측에 어떻게 반영되는지 확인해요</p></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-lbl">전체 피드백</div><div class="stat-val green" id="s-total">0</div><div class="stat-sub">누적 후기 수</div></div>
+        <div class="stat-card"><div class="stat-lbl">보정 적용 장소</div><div class="stat-val blue" id="s-places">0</div><div class="stat-sub">5건 이상 수집</div></div>
+        <div class="stat-card"><div class="stat-lbl">과소평가 장소</div><div class="stat-val amber" id="s-under">0</div><div class="stat-sub">API보다 실제 붐빔</div></div>
+        <div class="stat-card"><div class="stat-lbl">과대평가 장소</div><div class="stat-val green" id="s-over">0</div><div class="stat-sub">API보다 실제 한산</div></div>
+      </div>
+      <div class="sim-box">
+        <h3>보정계수 시뮬레이터</h3>
+        <p>장소와 API 혼잡도를 선택하면 피드백 기반 보정값을 계산해드려요</p>
+        <div class="sim-ctrls">
+          <select class="sim-sel" id="sim-place">
+            <option value="">장소 선택</option>
+            <option>성수카페거리</option><option>홍대입구역</option>
+            <option>강남 MICE 관광특구</option><option>명동</option>
+            <option>이태원 관광특구</option><option>여의도한강공원</option><option>광화문·덕수궁</option>
+          </select>
+          <select class="sim-sel" id="sim-api"><option value="">API 혼잡도</option><option>여유</option><option>보통</option><option>약간붐빔</option><option>붐빔</option></select>
+          <select class="sim-sel" id="sim-time"><option value="">시간대</option><option value="morning">오전</option><option value="afternoon">오후</option><option value="evening">저녁</option><option value="night">밤</option></select>
+          <button class="sim-run" onclick="runSim()">보정값 계산</button>
+        </div>
+        <div class="sim-result" id="sim-result"></div>
+      </div>
+      <div class="two-col">
+        <div class="panel"><h3>장소별 보정 현황</h3><div id="corr-list"><p style="color:var(--text3);font-size:13px">피드백이 쌓이면 여기에 표시돼요</p></div></div>
+        <div class="panel">
+          <h3>피드백 분포</h3>
+          <div class="chart-wrap">
+            <div><div class="chart-row-lbl"><span>생각보다 한산</span><span id="dn">0건</span></div><div class="chart-bar-bg"><div class="chart-bar" id="db-down" style="width:0%;background:var(--accent)"></div></div></div>
+            <div><div class="chart-row-lbl"><span>예상대로</span><span id="sn">0건</span></div><div class="chart-bar-bg"><div class="chart-bar" id="db-same" style="width:0%;background:var(--text3)"></div></div></div>
+            <div><div class="chart-row-lbl"><span>생각보다 붐빔</span><span id="un">0건</span></div><div class="chart-bar-bg"><div class="chart-bar" id="db-up" style="width:0%;background:var(--warn)"></div></div></div>
+          </div>
+          <div style="margin-top:20px"><h3>만족도 평균</h3><div style="margin-top:12px;font-size:13px;color:var(--text2)" id="sat-avg">아직 데이터가 없어요</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="page admin-page" id="page-admin">
+      <div class="page-hdr"><h1>관리자 — 보정계수 입력</h1><p>수동으로 장소별 보정계수(δ)를 입력하거나 JSON으로 일괄 업로드할 수 있어요</p></div>
+
+      <div class="admin-box">
+        <h3>단일 장소 보정계수 추가</h3>
+        <p>장소명과 δ값(-1 ~ +1)을 직접 입력하세요. 피드백 건수는 신뢰도를 결정해요.</p>
+        <div style="display:grid;grid-template-columns:1fr 120px 120px;gap:10px;margin-bottom:10px">
+          <input id="adm-place" type="text" placeholder="장소명 (예: 성수카페거리)" style="padding:9px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);font-size:13px;font-family:var(--font);outline:none;background:var(--bg);color:var(--text)">
+          <input id="adm-delta" type="number" step="0.1" min="-1" max="1" placeholder="δ (-1~1)" style="padding:9px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);font-size:13px;font-family:var(--mono);outline:none;background:var(--bg);color:var(--text)">
+          <input id="adm-count" type="number" min="0" placeholder="건수" style="padding:9px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);font-size:13px;font-family:var(--mono);outline:none;background:var(--bg);color:var(--text)">
+        </div>
+        <div class="admin-row">
+          <button class="admin-btn" onclick="addManualCorr()">추가</button>
+          <button class="admin-btn sec" onclick="clearAdmInputs()">초기화</button>
+        </div>
+        <div id="adm-msg" class="admin-msg"></div>
+      </div>
+
+      <div class="admin-box">
+        <h3>JSON 일괄 업로드</h3>
+        <p>아래 형식으로 여러 장소를 한 번에 입력하세요</p>
+        <textarea class="json-area" id="adm-json" placeholder='[
+  { "place": "성수카페거리", "delta": 0.6, "count": 23 },
+  { "place": "홍대입구역", "delta": -0.3, "count": 11 },
+  { "place": "명동", "delta": 0.8, "count": 45 }
+]'></textarea>
+        <div class="admin-row">
+          <button class="admin-btn" onclick="loadJson()">JSON 적용</button>
+          <button class="admin-btn sec" onclick="exportJson()">현재 데이터 내보내기</button>
+        </div>
+        <div id="adm-json-msg" class="admin-msg"></div>
+      </div>
+
+      <div class="admin-box">
+        <h3>현재 보정계수 현황</h3>
+        <div id="adm-table-wrap"><p style="color:var(--text3);font-size:13px">등록된 보정계수가 없어요</p></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── STATE ──
+const profile = { age: null, gender: null, styles: [] };
+const chatHistory = [];
+const feedbacks = [];
+const manualCorr = {}; // { placeName: { delta, count } }
+let isLoading = false;
+const fbState = { crowd: null, weather: null, stars: 0, time: null };
+
+// ── ONBOARD ──
+document.querySelectorAll('#ob-age .chip').forEach(c => {
+  c.onclick = () => { document.querySelectorAll('#ob-age .chip').forEach(x => x.classList.remove('on')); c.classList.add('on'); profile.age = c.dataset.v; checkStart(); };
+});
+document.querySelectorAll('#ob-gender .chip').forEach(c => {
+  c.onclick = () => { document.querySelectorAll('#ob-gender .chip').forEach(x => x.classList.remove('on')); c.classList.add('on'); profile.gender = c.dataset.v; checkStart(); };
+});
+document.querySelectorAll('#ob-style .chip').forEach(c => {
+  c.onclick = () => { c.classList.toggle('on'); c.classList.contains('on') ? profile.styles.push(c.dataset.v) : profile.styles.splice(profile.styles.indexOf(c.dataset.v), 1); };
+});
+function checkStart() { document.getElementById('start-btn').classList.toggle('ready', !!(profile.age && profile.gender)); }
+
+function skipProfile() { profile.age = profile.age || '미입력'; profile.gender = profile.gender || '미입력'; launchApp(); }
+function startApp() { if (!profile.age || !profile.gender) return; launchApp(); }
+
+function launchApp() {
+  document.getElementById('ob-wrap').style.display = 'none';
+  document.getElementById('shell').style.display = 'grid';
+  document.getElementById('p-av').textContent = profile.age !== '미입력' ? profile.age[0] : '?';
+  document.getElementById('p-name').textContent = profile.age !== '미입력' ? `${profile.age} · ${profile.gender !== '선택 안 함' ? profile.gender : ''}` : '게스트';
+  addBotMsg(`안녕하세요! Boom!에 오신 걸 환영해요 💥\n${profile.age !== '미입력' ? profile.age + (profile.gender && profile.gender !== '선택 안 함' ? ' ' + profile.gender + '분' : '분') + '이시군요.' : ''} ${profile.styles.length ? profile.styles.join(', ') + ' 취향으로 맞춤 추천해드릴게요!' : '어디로 가실 계획인가요?'}`);
+  document.getElementById('chat-inp').addEventListener('input', () => { document.getElementById('send-btn').disabled = !document.getElementById('chat-inp').value.trim(); });
+}
+
+// ── NAV ──
+function goPage(p) {
+  ['chat','feedback','dashboard','admin'].forEach(n => {
+    document.getElementById(`page-${n}`).classList.toggle('active', n === p);
+    document.getElementById(`nav-${n}`).classList.toggle('active', n === p);
+  });
+  if (p === 'dashboard') refreshDash();
+  if (p === 'admin') refreshAdmTable();
+}
+
+// ── CHAT (STREAMING) ──
+function addBotMsg(t) {
+  const m = document.getElementById('messages'), d = document.createElement('div');
+  d.className = 'msg bot';
+  d.innerHTML = `<div class="msg-av">💥</div><div class="bubble">${t.replace(/\n/g, '<br>')}</div>`;
+  m.appendChild(d); m.scrollTop = m.scrollHeight;
+  return d.querySelector('.bubble');
+}
+function addUserMsg(t) {
+  const m = document.getElementById('messages'), d = document.createElement('div');
+  d.className = 'msg user';
+  d.innerHTML = `<div class="bubble">${t.replace(/\n/g, '<br>')}</div>`;
+  m.appendChild(d); m.scrollTop = m.scrollHeight;
+}
+function showTyping() {
+  const m = document.getElementById('messages'), d = document.createElement('div');
+  d.className = 'msg bot'; d.id = 'typing';
+  d.innerHTML = `<div class="msg-av">💥</div><div class="bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  m.appendChild(d); m.scrollTop = m.scrollHeight;
+}
+function removeTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
+function useSug(el) { const i = document.getElementById('chat-inp'); i.value = el.textContent; document.getElementById('send-btn').disabled = false; sendMsg(); }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!document.getElementById('send-btn').disabled) sendMsg(); } }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+
+function getCorrCtx() {
+  const byPlace = {};
+  feedbacks.forEach(f => { if (!byPlace[f.place]) byPlace[f.place] = []; byPlace[f.place].push(f.crowd); });
+  const lines = [];
+  // user feedbacks
+  for (const [pl, vals] of Object.entries(byPlace)) {
+    if (vals.length >= 3) lines.push(`${pl}: δ=${((vals.reduce((a,b)=>a+b,0))/vals.length).toFixed(2)} (피드백 ${vals.length}건)`);
+  }
+  // manual corrections
+  for (const [pl, v] of Object.entries(manualCorr)) {
+    if (!byPlace[pl]) lines.push(`${pl}: δ=${v.delta.toFixed(2)} (수동 입력 ${v.count}건)`);
+  }
+  return lines.length ? '\n\n[사용자 피드백 보정 데이터]\n' + lines.join('\n') : '';
+}
+
+async function sendMsg() {
+  const inp = document.getElementById('chat-inp'), text = inp.value.trim();
+  if (!text || isLoading) return;
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('sugs').style.display = 'none';
+  inp.value = ''; inp.style.height = 'auto';
+  addUserMsg(text);
+  chatHistory.push({ role: 'user', content: text });
+  showTyping();
+
+  const sys = `너는 서울 나들이 도우미 챗봇 "Boom!"이야.
+사용자 프로필: ${profile.age} / ${profile.gender} / 관심사: ${profile.styles.join(',') || '없음'}
+
+핵심 역할:
+1. 서울 장소의 혼잡도 예측, 날씨 기반 방문 조언, 팝업/맛집/데이트 코스 추천
+2. 혼잡하거나 붐빌 것으로 예상되면 → 반드시 대안을 제시해줘:
+   - 같은 장소의 덜 붐비는 시간대 추천 ("오전 11시 이전이 훨씬 여유로워요")
+   - 비슷한 분위기의 대안 장소 추천 ("성수 대신 연남동은 어때요?")
+   - 다른 날짜 추천 ("토요일보다 일요일 저녁이 덜 붐비는 편이에요")
+3. 피드백 보정 데이터가 있으면 "실제 방문자들에 따르면..." 식으로 자연스럽게 녹여줘
+4. 웹서치로 최신 팝업, 날씨, 행사 정보 반영
+
+말투:
+- 친근하고 따뜻한 존댓말, 대화처럼 자연스럽게
+- 이모지 1~2개, 4~6문장 내외
+- 마지막에 후속 질문이나 제안 자연스럽게 유도${getCorrCtx()}`;
+
+  // streaming
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        stream: true,
+        system: sys,
+        messages: chatHistory,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+      })
+    });
+
+    removeTyping();
+
+    if (!res.ok || !res.body) throw new Error('stream failed');
+
+    const msgs = document.getElementById('messages');
+    const d = document.createElement('div');
+    d.className = 'msg bot';
+    d.innerHTML = `<div class="msg-av">💥</div><div class="bubble"></div>`;
+    msgs.appendChild(d);
+    const bubble = d.querySelector('.bubble');
+    msgs.scrollTop = msgs.scrollHeight;
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6);
+        if (data === '[DONE]') continue;
+        try {
+          const json = JSON.parse(data);
+          if (json.type === 'content_block_delta' && json.delta?.type === 'text_delta') {
+            fullText += json.delta.text;
+            bubble.innerHTML = fullText.replace(/\n/g, '<br>');
+            msgs.scrollTop = msgs.scrollHeight;
+          }
+        } catch {}
+      }
+    }
+
+    if (fullText) chatHistory.push({ role: 'assistant', content: fullText });
+    else bubble.innerHTML = '잠깐 다시 말씀해주세요 😅';
+
+  } catch {
+    removeTyping();
+    addBotMsg('연결이 잠깐 끊겼어요. 다시 시도해주세요 😅');
+  }
+
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+// ── FEEDBACK ──
+['fbo-crowd','fbo-weather','fbo-time'].forEach(gid => {
+  document.querySelectorAll(`#${gid} .fb-opt`).forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll(`#${gid} .fb-opt`).forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      if (gid === 'fbo-crowd') fbState.crowd = parseInt(b.dataset.v);
+      else if (gid === 'fbo-weather') fbState.weather = parseInt(b.dataset.v);
+      else fbState.time = b.dataset.v;
+    };
+  });
+});
+document.querySelectorAll('#fb-stars .star').forEach(s => {
+  s.onclick = () => { const v = parseInt(s.dataset.v); fbState.stars = v; document.querySelectorAll('#fb-stars .star').forEach((x, i) => x.classList.toggle('on', i < v)); };
+});
+
+function submitFb() {
+  const place = document.getElementById('fb-place').value;
+  if (!place) { alert('장소를 선택해주세요'); return; }
+  if (fbState.crowd === null) { alert('혼잡도 체감을 선택해주세요'); return; }
+  const now = new Date();
+  feedbacks.push({ place, crowd: fbState.crowd, weather: fbState.weather, stars: fbState.stars, time: fbState.time, ts: now.toLocaleString('ko-KR', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) });
+  fbState.crowd = null; fbState.weather = null; fbState.stars = 0; fbState.time = null;
+  document.getElementById('fb-place').value = '';
+  document.getElementById('fb-prev').textContent = '장소를 선택해주세요';
+  document.querySelectorAll('.fb-opt').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.star').forEach(x => x.classList.remove('on'));
+  updateFbBadge(); renderFbHistory();
+  alert('후기가 제출됐어요! 대시보드에서 보정 현황을 확인해보세요 🎉');
+}
+function updateFbBadge() { document.getElementById('fb-badge').textContent = feedbacks.length; document.getElementById('fb-count-lbl').textContent = `(${feedbacks.length}건)`; }
+function renderFbHistory() {
+  const el = document.getElementById('fb-list');
+  if (!feedbacks.length) { el.innerHTML = '<p style="color:var(--text3);font-size:13px">아직 남긴 후기가 없어요</p>'; return; }
+  el.innerHTML = [...feedbacks].reverse().map(f => {
+    const lbl = f.crowd === -1 ? '한산' : f.crowd === 1 ? '붐빔' : '예상대로';
+    const cls = f.crowd === 1 ? 'up' : f.crowd === -1 ? 'down' : 'same';
+    return `<div class="fb-row"><span class="fb-row-place">${f.place}</span><span class="tag ${cls}">${lbl}</span><span style="color:#F5A623;font-size:12px">${f.stars ? '★'.repeat(f.stars) : '-'}</span><span class="fb-ts">${f.ts}</span></div>`;
+  }).join('');
+}
+
+// ── DASHBOARD ──
+function getDelta(place) {
+  // manual override takes priority if no user feedbacks
+  const vals = feedbacks.filter(f => f.place === place).map(f => f.crowd);
+  if (vals.length) return { delta: vals.reduce((a, b) => a + b, 0) / vals.length, count: vals.length, source: 'user' };
+  if (manualCorr[place]) return { delta: manualCorr[place].delta, count: manualCorr[place].count, source: 'manual' };
+  return null;
+}
+
+function applyCorr(api, deltaInfo) {
+  if (!deltaInfo || deltaInfo.count < 5) return { result: api, applied: false };
+  const w = deltaInfo.count < 15 ? 0.3 : 1.0, eff = deltaInfo.delta * w;
+  const map = { '여유': 0, '보통': 1, '약간붐빔': 2, '붐빔': 3 };
+  let idx = map[api] ?? 1;
+  if (eff >= 0.4) idx = Math.min(3, idx + 1);
+  else if (eff <= -0.4) idx = Math.max(0, idx - 1);
+  return { result: ['여유', '보통', '약간붐빔', '붐빔'][idx], applied: true };
+}
+
+function refreshDash() {
+  document.getElementById('s-total').textContent = feedbacks.length;
+  const places = [...new Set([...feedbacks.map(f => f.place), ...Object.keys(manualCorr)])];
+  document.getElementById('s-places').textContent = places.filter(p => { const d = getDelta(p); return d && d.count >= 5; }).length;
+  document.getElementById('s-under').textContent = places.filter(p => { const d = getDelta(p); return d && d.delta >= 0.4; }).length;
+  document.getElementById('s-over').textContent = places.filter(p => { const d = getDelta(p); return d && d.delta <= -0.4; }).length;
+
+  const corrEl = document.getElementById('corr-list');
+  corrEl.innerHTML = places.length ? places.map(p => {
+    const di = getDelta(p); if (!di) return '';
+    const dir = di.delta >= 0.4 ? 'up' : di.delta <= -0.4 ? 'down' : 'same';
+    const lbl = di.delta >= 0.4 ? '→ 상향' : di.delta <= -0.4 ? '→ 하향' : '→ 유지';
+    const trust = Math.min(100, Math.round(di.count / 15 * 100));
+    const src = di.source === 'manual' ? '<span style="font-size:10px;color:var(--text3)">[수동]</span>' : '';
+    return `<div class="corr-row"><span class="corr-place">${p} ${src}</span><span class="corr-api">δ${di.delta >= 0 ? '+' : ''}${di.delta.toFixed(2)}</span><span class="corr-result ${dir}">${lbl}</span><div class="trust-wrap"><div class="trust-bg"><div class="trust-fill" style="width:${trust}%"></div></div><div class="trust-lbl">${di.count}건</div></div></div>`;
+  }).join('') : '<p style="color:var(--text3);font-size:13px">피드백이 쌓이면 여기에 표시돼요</p>';
+
+  const downs = feedbacks.filter(f => f.crowd === -1).length, sames = feedbacks.filter(f => f.crowd === 0).length, ups = feedbacks.filter(f => f.crowd === 1).length, tot = feedbacks.length || 1;
+  document.getElementById('dn').textContent = downs + '건'; document.getElementById('sn').textContent = sames + '건'; document.getElementById('un').textContent = ups + '건';
+  document.getElementById('db-down').style.width = (downs / tot * 100) + '%'; document.getElementById('db-same').style.width = (sames / tot * 100) + '%'; document.getElementById('db-up').style.width = (ups / tot * 100) + '%';
+  const rated = feedbacks.filter(f => f.stars > 0);
+  document.getElementById('sat-avg').innerHTML = rated.length ? `<span style="font-size:22px;font-weight:700;font-family:var(--mono)">${(rated.reduce((a,f)=>a+f.stars,0)/rated.length).toFixed(1)}</span> / 5.0 <span style="color:#F5A623">${'★'.repeat(Math.round(rated.reduce((a,f)=>a+f.stars,0)/rated.length))}</span> <span style="color:var(--text3)">(${rated.length}건)</span>` : '아직 데이터가 없어요';
+}
+
+function runSim() {
+  const place = document.getElementById('sim-place').value, api = document.getElementById('sim-api').value;
+  const time = document.getElementById('sim-time').value, res = document.getElementById('sim-result');
+  if (!place || !api) { res.className = 'sim-result show'; res.innerHTML = '<span style="color:var(--text3)">장소와 API 혼잡도를 선택해주세요</span>'; return; }
+  const di = getDelta(place);
+  if (!di) { res.className = 'sim-result show'; res.innerHTML = `<strong>${place}</strong>에 대한 데이터가 없어요. 피드백 5건 이상 또는 수동 입력 후 적용됩니다.`; return; }
+  const { result } = applyCorr(api, di), changed = result !== api;
+  const dc = di.delta >= 0.4 ? 'pos' : di.delta <= -0.4 ? 'neg' : 'zero';
+  const trustNote = di.count < 5 ? `⚠️ ${di.count}건 (5건 미만 → 미적용)` : di.count < 15 ? `📊 ${di.count}건 (30% 적용)` : `✅ ${di.count}건 (완전 신뢰)`;
+  const tLbl = time ? { morning: '오전', afternoon: '오후', evening: '저녁', night: '밤' }[time] : '전체';
+  res.className = 'sim-result show';
+  res.innerHTML = `<div style="margin-bottom:10px"><strong>${place}</strong> · ${tLbl} <span style="font-size:11px;color:var(--text3)">${di.source === 'manual' ? '[수동 입력]' : '[사용자 피드백]'}</span></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:15px;flex-wrap:wrap"><span>API: <strong>${api}</strong></span><span>→</span><span>δ: <span class="dpill ${dc}">${di.delta >= 0 ? '+' : ''}${di.delta.toFixed(2)}</span></span><span>→</span><span>최종: <strong style="color:${changed ? 'var(--warn)' : 'var(--accent)'}">${result}</strong>${changed ? ' ⬆️' : ' (유지)'}</span></div><div style="font-size:12px;color:var(--text3)">${trustNote}</div>`;
+}
+
+// ── ADMIN ──
+function addManualCorr() {
+  const place = document.getElementById('adm-place').value.trim();
+  const delta = parseFloat(document.getElementById('adm-delta').value);
+  const count = parseInt(document.getElementById('adm-count').value) || 10;
+  const msg = document.getElementById('adm-msg');
+  if (!place) { showAdmMsg('adm-msg', '장소명을 입력해주세요', 'err'); return; }
+  if (isNaN(delta) || delta < -1 || delta > 1) { showAdmMsg('adm-msg', 'δ값은 -1 ~ +1 사이여야 해요', 'err'); return; }
+  manualCorr[place] = { delta, count };
+  clearAdmInputs();
+  refreshAdmTable();
+  showAdmMsg('adm-msg', `"${place}" 보정계수가 추가됐어요 (δ${delta >= 0 ? '+' : ''}${delta.toFixed(2)}, ${count}건)`, 'ok');
+}
+
+function clearAdmInputs() {
+  document.getElementById('adm-place').value = '';
+  document.getElementById('adm-delta').value = '';
+  document.getElementById('adm-count').value = '';
+}
+
+function showAdmMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text; el.className = `admin-msg ${type}`;
+  setTimeout(() => { el.className = 'admin-msg'; }, 3000);
+}
+
+function loadJson() {
+  const raw = document.getElementById('adm-json').value.trim();
+  try {
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) throw new Error('배열 형식이어야 해요');
+    arr.forEach(item => {
+      if (!item.place || item.delta === undefined) throw new Error(`"place"와 "delta" 필드가 필요해요`);
+      manualCorr[item.place] = { delta: parseFloat(item.delta), count: parseInt(item.count) || 10 };
+    });
+    refreshAdmTable();
+    showAdmMsg('adm-json-msg', `${arr.length}개 장소 보정계수가 적용됐어요`, 'ok');
+  } catch (e) {
+    showAdmMsg('adm-json-msg', `JSON 오류: ${e.message}`, 'err');
+  }
+}
+
+function exportJson() {
+  const all = {};
+  feedbacks.forEach(f => { if (!all[f.place]) all[f.place] = []; all[f.place].push(f.crowd); });
+  const arr = [];
+  for (const [pl, vals] of Object.entries(all)) {
+    arr.push({ place: pl, delta: parseFloat((vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2)), count: vals.length, source: 'user' });
+  }
+  for (const [pl, v] of Object.entries(manualCorr)) {
+    if (!all[pl]) arr.push({ place: pl, delta: v.delta, count: v.count, source: 'manual' });
+  }
+  document.getElementById('adm-json').value = JSON.stringify(arr, null, 2);
+  showAdmMsg('adm-json-msg', '현재 데이터를 JSON으로 내보냈어요 — 복사해서 저장하세요', 'ok');
+}
+
+function refreshAdmTable() {
+  const wrap = document.getElementById('adm-table-wrap');
+  const entries = Object.entries(manualCorr);
+  if (!entries.length) { wrap.innerHTML = '<p style="color:var(--text3);font-size:13px">등록된 보정계수가 없어요</p>'; return; }
+  wrap.innerHTML = `<table class="corr-table">
+    <thead><tr><th>장소</th><th>δ값</th><th>건수</th><th>방향</th><th></th></tr></thead>
+    <tbody>${entries.map(([pl, v]) => `
+      <tr>
+        <td><strong>${pl}</strong></td>
+        <td><span class="dpill ${v.delta >= 0.4 ? 'pos' : v.delta <= -0.4 ? 'neg' : 'zero'}">${v.delta >= 0 ? '+' : ''}${v.delta.toFixed(2)}</span></td>
+        <td style="font-family:var(--mono)">${v.count}</td>
+        <td style="color:${v.delta >= 0.4 ? 'var(--warn)' : v.delta <= -0.4 ? 'var(--accent)' : 'var(--text2)'}">${v.delta >= 0.4 ? '↑ 상향' : v.delta <= -0.4 ? '↓ 하향' : '— 유지'}</td>
+        <td><button class="del-btn" onclick="deleteCorr('${pl}')">삭제</button></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function deleteCorr(place) {
+  delete manualCorr[place];
+  refreshAdmTable();
+}
+</script>
+</body>
+</html>
