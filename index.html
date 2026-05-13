@@ -5,14 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Boom! — 내가 지금 가는 곳, 얼마나 붐빌까?</title>
   <meta name="description" content="Boom! — 서울 실시간 혼잡도 기반 나들이 추천 챗봇" />
-
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
 
     body {
       background: linear-gradient(180deg, #fff8f4 0%, #fff 100%);
@@ -26,7 +20,7 @@
     .app {
       width: 100%;
       max-width: 760px;
-      background: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.85);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(0,0,0,0.05);
       border-radius: 28px;
@@ -34,72 +28,47 @@
       box-shadow: 0 10px 40px rgba(0,0,0,0.06);
     }
 
+    /* HERO */
     .hero {
       padding: 40px 28px 24px;
       background: linear-gradient(135deg, #ffefe8, #fff8f4);
     }
-
     .logo {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 10px 16px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.75);
       font-weight: 700;
       margin-bottom: 20px;
+      font-size: 15px;
     }
-
-    h1 {
-      font-size: 42px;
-      margin-bottom: 10px;
-      letter-spacing: -1px;
-    }
-
-    .sub {
-      line-height: 1.7;
-      color: #555;
-      font-size: 16px;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
+    h1 { font-size: 42px; margin-bottom: 10px; letter-spacing: -1px; }
+    .sub { line-height: 1.7; color: #555; font-size: 16px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
     .chip {
       border: none;
       background: white;
       padding: 10px 16px;
       border-radius: 999px;
       cursor: pointer;
-      transition: 0.2s;
       font-size: 14px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      transition: transform 0.15s;
     }
+    .chip:hover { transform: translateY(-2px); }
 
-    .chip:hover {
-      transform: translateY(-2px);
-    }
-
+    /* CHAT */
     .chat-wrap {
       height: 520px;
       overflow-y: auto;
       padding: 24px;
       background: #fff;
+      scroll-behavior: smooth;
     }
-
-    .msg {
-      margin-bottom: 18px;
-      display: flex;
-    }
-
-    .msg.user {
-      justify-content: flex-end;
-    }
-
+    .msg { margin-bottom: 18px; display: flex; }
+    .msg.user { justify-content: flex-end; }
     .bubble {
       max-width: 80%;
       padding: 16px 18px;
@@ -108,30 +77,16 @@
       font-size: 15px;
       white-space: pre-wrap;
     }
+    .user .bubble { background: #111; color: white; border-bottom-right-radius: 6px; }
+    .bot .bubble { background: #f5f5f5; border-bottom-left-radius: 6px; }
 
-    .user .bubble {
-      background: #111;
-      color: white;
-      border-bottom-right-radius: 8px;
-    }
-
-    .bot .bubble {
-      background: #f5f5f5;
-      border-bottom-left-radius: 8px;
-    }
-
+    /* INPUT */
     .input-wrap {
       padding: 18px;
       border-top: 1px solid rgba(0,0,0,0.06);
       background: white;
     }
-
-    .input-box {
-      display: flex;
-      gap: 12px;
-      align-items: flex-end;
-    }
-
+    .input-box { display: flex; gap: 12px; align-items: flex-end; }
     textarea {
       flex: 1;
       border: none;
@@ -143,44 +98,33 @@
       min-height: 56px;
       max-height: 140px;
       font-size: 15px;
+      font-family: inherit;
+      line-height: 1.5;
     }
-
     .send {
-      width: 56px;
-      height: 56px;
+      width: 56px; height: 56px;
       border-radius: 50%;
       border: none;
       background: #111;
       color: white;
       font-size: 20px;
       cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s;
     }
+    .send:disabled { opacity: 0.35; cursor: default; }
+    .send:not(:disabled):hover { background: #2d7a56; }
 
+    /* SURVEY */
     .survey {
       margin: 24px;
       padding: 24px;
       background: #fff8f4;
       border-radius: 24px;
     }
-
-    .survey h3 {
-      margin-bottom: 10px;
-      font-size: 20px;
-    }
-
-    .survey p {
-      color: #666;
-      margin-bottom: 18px;
-      line-height: 1.6;
-    }
-
-    .survey-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
+    .survey h3 { margin-bottom: 10px; font-size: 20px; }
+    .survey p { color: #666; margin-bottom: 18px; line-height: 1.6; }
+    .survey-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
     .survey button {
       border: none;
       background: white;
@@ -188,99 +132,113 @@
       padding: 10px 16px;
       cursor: pointer;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      font-size: 14px;
+      transition: transform 0.1s;
     }
+    .survey button:hover { transform: translateY(-1px); }
+    .survey button.selected { background: #111; color: white; }
 
-    .mini {
-      margin-top: 14px;
-      color: #888;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
+    /* ADMIN */
     .admin {
       margin: 0 24px 24px;
       padding: 24px;
       border-radius: 24px;
       background: #fafafa;
     }
-
-    .admin h3 {
-      margin-bottom: 16px;
-    }
-
+    .admin h3 { margin-bottom: 6px; }
+    .admin p { font-size: 13px; color: #888; margin-bottom: 16px; line-height: 1.6; }
+    .admin-inputs { display: grid; grid-template-columns: 1fr 120px; gap: 10px; margin-bottom: 12px; }
     .admin input {
       width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: 1px solid #ddd;
-      margin-bottom: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
     }
-
+    .admin input:focus { border-color: #111; }
+    .admin-btns { display: flex; gap: 10px; flex-wrap: wrap; }
     .admin button {
       border: none;
       background: #111;
       color: white;
-      padding: 12px 18px;
+      padding: 11px 18px;
       border-radius: 12px;
       cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.15s;
     }
+    .admin button:hover { background: #333; }
+    .admin button.sec { background: #eee; color: #333; }
+    .admin button.sec:hover { background: #ddd; }
 
-    .typing {
+    .mini { margin-top: 14px; color: #888; font-size: 13px; line-height: 1.7; }
+    .delta-tag {
       display: inline-flex;
-      gap: 4px;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 12px;
+      margin: 3px;
     }
+    .delta-tag .del { cursor: pointer; color: #aaa; font-size: 14px; }
+    .delta-tag .del:hover { color: #e53; }
 
+    /* TYPING */
+    .typing { display: inline-flex; gap: 4px; }
     .typing span {
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       border-radius: 50%;
       background: #999;
       animation: bounce 1s infinite;
     }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-5px)} }
 
-    .typing span:nth-child(2) {
-      animation-delay: 0.2s;
+    /* STATUS */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #aaa;
+      padding: 6px 18px;
+      background: white;
+      border-top: 1px solid #f0f0f0;
     }
-
-    .typing span:nth-child(3) {
-      animation-delay: 0.4s;
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #3daa78;
+      animation: pulse 2s infinite;
     }
-
-    @keyframes bounce {
-      0%,80%,100% {
-        transform: translateY(0);
-      }
-      40% {
-        transform: translateY(-5px);
-      }
-    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
     @media (max-width: 640px) {
-      h1 {
-        font-size: 32px;
-      }
-
-      .bubble {
-        max-width: 90%;
-      }
+      h1 { font-size: 32px; }
+      .bubble { max-width: 90%; }
+      .admin-inputs { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-
 <div class="app">
 
+  <!-- HERO -->
   <section class="hero">
     <div class="logo">💥 Boom!</div>
-
     <h1>Boom!</h1>
-
     <p class="sub">
-      Boom! — 내가 지금 가는 곳, 얼마나 붐빌까?<br><br>
-      서울시 실시간 혼잡도 데이터를 기반으로,
+      내가 지금 가는 곳, 얼마나 붐빌까?<br><br>
+      서울시 실시간 혼잡도 데이터를 기반으로,<br>
       지금 가장 쾌적한 시간과 장소를 추천해드려요.
     </p>
-
     <div class="chips" id="sugs">
       <button class="chip">강남 지금 어때?</button>
       <button class="chip">성수 오늘 많이 붐벼?</button>
@@ -289,60 +247,64 @@
     </div>
   </section>
 
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    서울시 실시간 데이터 연결됨
+  </div>
+
+  <!-- CHAT -->
   <div class="chat-wrap" id="chat"></div>
 
+  <!-- INPUT -->
   <div class="input-wrap">
     <div class="input-box">
-      <textarea
-        id="chat-inp"
-        placeholder="오늘 어디로 움직여볼까요? 🙂"
-      ></textarea>
-
+      <textarea id="chat-inp" placeholder="오늘 어디로 움직여볼까요? 🙂" rows="1"></textarea>
       <button class="send" id="send-btn">➜</button>
     </div>
   </div>
 
+  <!-- SURVEY -->
   <section class="survey">
     <h3>실제 체감은 어땠나요?</h3>
-
     <p>
-      Boom!은 단순 API 혼잡도 데이터를 그대로 사용하지 않고,
-      실제 방문자 피드백을 통해 장소별 체감 혼잡도를 보정하려고 해요.
+      방문 후 실제 체감을 남겨주시면 혼잡도 보정계수(δ)에 반영돼요.<br>
+      피드백이 쌓일수록 예측이 더 정확해집니다.
     </p>
-
-    <div class="survey-row">
-      <button onclick="saveFeedback('crowd','붐빔')">😵 붐빔</button>
-      <button onclick="saveFeedback('crowd','보통')">😐 보통</button>
-      <button onclick="saveFeedback('crowd','여유')">😌 여유</button>
+    <div class="survey-row" id="crowd-row">
+      <button onclick="saveFeedback('crowd','붐빔',this)">😵 붐빔</button>
+      <button onclick="saveFeedback('crowd','보통',this)">😐 보통</button>
+      <button onclick="saveFeedback('crowd','여유',this)">😌 여유</button>
     </div>
-
-    <div class="survey-row">
-      <button onclick="saveFeedback('temp','더움')">🥵 더웠어요</button>
-      <button onclick="saveFeedback('temp','적당')">😊 적당했어요</button>
-      <button onclick="saveFeedback('temp','추움')">🥶 추웠어요</button>
+    <div class="survey-row" id="temp-row">
+      <button onclick="saveFeedback('temp','더움',this)">🥵 더웠어요</button>
+      <button onclick="saveFeedback('temp','적당',this)">😊 적당했어요</button>
+      <button onclick="saveFeedback('temp','추움',this)">🥶 추웠어요</button>
     </div>
-
-    <div class="mini">
-      수집된 데이터는 장소별 체감 혼잡도 보정계수(δ)에 반영됩니다.
-    </div>
+    <div class="mini" id="fb-count"></div>
   </section>
 
+  <!-- ADMIN -->
   <section class="admin">
     <h3>보정계수 관리자 입력</h3>
-
-    <input id="place-input" placeholder="예: 성수" />
-    <input id="delta-input" placeholder="예: 0.6" />
-
-    <button onclick="saveDelta()">보정계수 저장</button>
-
+    <p>장소별 δ값을 직접 입력하거나 피드백 기반 자동 계산값을 확인해요.<br>δ &gt; 0 : 실제로 더 붐빔 / δ &lt; 0 : 실제로 더 여유로움</p>
+    <div class="admin-inputs">
+      <input id="place-input" placeholder="장소명 (예: 성수)" />
+      <input id="delta-input" type="number" step="0.1" min="-1" max="1" placeholder="δ (예: 0.6)" />
+    </div>
+    <div class="admin-btns">
+      <button onclick="saveDelta()">보정계수 저장</button>
+      <button class="sec" onclick="calcFromFeedback()">피드백으로 자동 계산</button>
+      <button class="sec" onclick="exportData()">데이터 내보내기</button>
+    </div>
     <div class="mini" id="delta-view"></div>
   </section>
 
 </div>
 
 <script>
-
-const API_KEY = '46536449697368303231576d506f4e';
+// ── CONFIG ──
+const WORKERS_URL = 'https://boom-beta.sh031300.workers.dev';
 
 const AREA_MAP = {
   '강남': '강남 MICE 관광특구',
@@ -351,312 +313,374 @@ const AREA_MAP = {
   '명동': '명동 관광특구',
   '잠실': '잠실 관광특구',
   '이태원': '이태원 관광특구',
-  '여의도': '여의도'
+  '여의도': '여의도',
+  '한강': '여의도한강공원',
+  '광화문': '광화문·덕수궁',
+  '북촌': '북촌한옥마을',
+  '인사동': '인사·익선동',
 };
 
 const ALT_MAP = {
-  '성수': '연남동',
-  '홍대': '합정',
-  '강남': '서울숲',
-  '잠실': '석촌호수',
-  '명동': '을지로',
-  '이태원': '해방촌',
-  '여의도': '망원한강공원'
+  '강남': ['서울숲', '청담동'],
+  '홍대': ['합정', '연남동'],
+  '성수': ['연남동', '뚝섬'],
+  '명동': ['을지로', '인사동'],
+  '잠실': ['석촌호수', '방이동'],
+  '이태원': ['해방촌', '경리단길'],
+  '여의도': ['망원한강공원', '합정'],
+  '한강': ['서울숲', '뚝섬'],
+  '광화문': ['북촌', '인사동'],
+  '북촌': ['인사동', '삼청동'],
+  '인사동': ['북촌', '익선동'],
 };
 
+const BEST_TIME = {
+  '강남': '평일 오전 11시 이전, 또는 주말 오전',
+  '홍대': '평일 오후 2시 이전',
+  '성수': '평일 오전 11시 이전',
+  '명동': '평일 오전, 또는 저녁 8시 이후',
+  '잠실': '평일 오전, 주말은 오전 10시 이전',
+  '이태원': '평일 저녁, 주말 낮',
+  '여의도': '평일 오전',
+  '한강': '평일 오전 또는 늦은 저녁',
+};
+
+// ── STATE ──
 let isLoading = false;
-let currentPlace = '성수';
+let currentPlace = null;
+const chatHistory = [];
 
-const chat = document.getElementById('chat');
-
-function addBotMsg(text) {
-  const div = document.createElement('div');
-  div.className = 'msg bot';
-
-  div.innerHTML = `
-    <div class="bubble">${text}</div>
-  `;
-
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-}
+// ── CHAT DOM ──
+const chatEl = document.getElementById('chat');
 
 function addUserMsg(text) {
-  const div = document.createElement('div');
-  div.className = 'msg user';
+  const d = document.createElement('div');
+  d.className = 'msg user';
+  d.innerHTML = `<div class="bubble">${escHtml(text)}</div>`;
+  chatEl.appendChild(d);
+  scrollChat();
+}
 
-  div.innerHTML = `
-    <div class="bubble">${text}</div>
-  `;
-
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+function addBotMsg(html) {
+  const d = document.createElement('div');
+  d.className = 'msg bot';
+  d.innerHTML = `<div class="bubble">${html}</div>`;
+  chatEl.appendChild(d);
+  scrollChat();
+  return d.querySelector('.bubble');
 }
 
 function showTyping() {
-  const div = document.createElement('div');
-  div.className = 'msg bot';
-  div.id = 'typing';
+  const d = document.createElement('div');
+  d.className = 'msg bot'; d.id = 'typing';
+  d.innerHTML = `<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chatEl.appendChild(d); scrollChat();
+}
+function removeTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
+function scrollChat() { chatEl.scrollTop = chatEl.scrollHeight; }
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  div.innerHTML = `
-    <div class="bubble">
-      <div class="typing">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  `;
+// ── SEOUL API (via Workers) ──
+async function fetchSeoulData(areaName) {
+  const url = `${WORKERS_URL}?area=${encodeURIComponent(areaName)}`;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeout);
+    if (!res.ok) return null;
+    const json = await res.json();
+    // 서울시 API 응답 구조: { CITYDATA: [ { LIVE_PPLTN_STTS: [...], WEATHER_STTS: [...], ... } ] }
+    const city = json?.CITYDATA?.[0];
+    if (!city) return null;
 
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+    const pop = Array.isArray(city.LIVE_PPLTN_STTS)
+      ? city.LIVE_PPLTN_STTS[0]
+      : city.LIVE_PPLTN_STTS;
+
+    const weather = Array.isArray(city.WEATHER_STTS)
+      ? city.WEATHER_STTS[0]
+      : city.WEATHER_STTS;
+
+    const events = Array.isArray(city.CULTURAL_EVENT_STTS)
+      ? city.CULTURAL_EVENT_STTS.slice(0, 2)
+      : [];
+
+    return {
+      congestion: pop?.AREA_CONGEST_LVL || null,
+      congestionMsg: pop?.AREA_CONGEST_MSG || null,
+      minTime: pop?.MIN_PPLTN_TIME || null,
+      maxTime: pop?.MAX_PPLTN_TIME || null,
+      temp: weather?.TEMP || null,
+      sensibleTemp: weather?.SENSIBLE_TEMP || null,
+      windSpeed: weather?.WIND_SPD || null,
+      precipitation: weather?.PRECPT_TYPE || null,
+      humidity: weather?.HUMIDITY || null,
+      events,
+    };
+  } catch {
+    clearTimeout(timeout);
+    return null;
+  }
 }
 
-function removeTyping() {
-  const el = document.getElementById('typing');
-  if (el) el.remove();
-}
-
-function getDelta(place) {
-  const data = JSON.parse(localStorage.getItem('boomDelta') || '{}');
-  return Number(data[place] || 0);
-}
+// ── DELTA (localStorage) ──
+function getDeltas() { return JSON.parse(localStorage.getItem('boomDelta') || '{}'); }
+function getDelta(place) { return Number(getDeltas()[place] || 0); }
 
 function saveDelta() {
   const place = document.getElementById('place-input').value.trim();
-  const delta = document.getElementById('delta-input').value.trim();
-
-  if (!place || !delta) return;
-
-  const data = JSON.parse(localStorage.getItem('boomDelta') || '{}');
-
+  const delta = parseFloat(document.getElementById('delta-input').value);
+  if (!place) { alert('장소명을 입력해주세요'); return; }
+  if (isNaN(delta) || delta < -1 || delta > 1) { alert('δ값은 -1 ~ 1 사이여야 해요'); return; }
+  const data = getDeltas();
   data[place] = delta;
-
   localStorage.setItem('boomDelta', JSON.stringify(data));
-
   renderDelta();
+  document.getElementById('place-input').value = '';
+  document.getElementById('delta-input').value = '';
+}
 
-  alert('보정계수가 저장되었어요!');
+function deleteDelta(place) {
+  const data = getDeltas();
+  delete data[place];
+  localStorage.setItem('boomDelta', JSON.stringify(data));
+  renderDelta();
 }
 
 function renderDelta() {
-  const data = JSON.parse(localStorage.getItem('boomDelta') || '{}');
-
-  let html = '<br>';
-
-  Object.keys(data).forEach(key => {
-    html += `${key}: δ ${data[key]}<br>`;
-  });
-
-  document.getElementById('delta-view').innerHTML = html;
+  const data = getDeltas();
+  const el = document.getElementById('delta-view');
+  const keys = Object.keys(data);
+  if (!keys.length) { el.innerHTML = '등록된 보정계수가 없어요'; return; }
+  el.innerHTML = '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">' +
+    keys.map(k => {
+      const v = data[k];
+      const color = v > 0 ? '#b85c00' : v < 0 ? '#1e6b4e' : '#666';
+      return `<span class="delta-tag">
+        <span style="font-weight:700">${k}</span>
+        <span style="color:${color};font-family:monospace">δ${v >= 0 ? '+' : ''}${Number(v).toFixed(2)}</span>
+        <span class="del" onclick="deleteDelta('${k}')">×</span>
+      </span>`;
+    }).join('') + '</div>';
 }
 
-function saveFeedback(type, value) {
+// ── FEEDBACK (localStorage) ──
+function getFeedbacks() { return JSON.parse(localStorage.getItem('boomFeedback') || '[]'); }
 
-  const logs = JSON.parse(localStorage.getItem('boomFeedback') || '[]');
+function saveFeedback(type, value, btn) {
+  if (!currentPlace) { alert('먼저 장소를 검색해보세요!'); return; }
+  // 같은 row 선택 표시
+  const row = btn.closest('.survey-row');
+  row.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
 
-  logs.push({
-    place: currentPlace,
-    type,
-    value,
-    date: new Date().toISOString()
-  });
-
+  const logs = getFeedbacks();
+  logs.push({ place: currentPlace, type, value, date: new Date().toISOString() });
   localStorage.setItem('boomFeedback', JSON.stringify(logs));
-
-  alert('피드백 감사합니다 💥');
+  updateFbCount();
 }
 
-async function sendMsg() {
+function updateFbCount() {
+  const logs = getFeedbacks();
+  const el = document.getElementById('fb-count');
+  if (!logs.length) { el.innerHTML = ''; return; }
+  const byPlace = {};
+  logs.forEach(l => { byPlace[l.place] = (byPlace[l.place] || 0) + 1; });
+  el.innerHTML = '누적 피드백: ' + Object.entries(byPlace).map(([p,c]) => `<strong>${p}</strong> ${c}건`).join(' · ');
+}
 
+function calcFromFeedback() {
+  const logs = getFeedbacks().filter(l => l.type === 'crowd');
+  if (!logs.length) { alert('아직 혼잡도 피드백이 없어요'); return; }
+  const byPlace = {};
+  logs.forEach(l => {
+    if (!byPlace[l.place]) byPlace[l.place] = [];
+    byPlace[l.place].push(l.value === '붐빔' ? 1 : l.value === '여유' ? -1 : 0);
+  });
+  const data = getDeltas();
+  for (const [place, vals] of Object.entries(byPlace)) {
+    data[place] = parseFloat((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2));
+  }
+  localStorage.setItem('boomDelta', JSON.stringify(data));
+  renderDelta();
+  alert('피드백 기반으로 보정계수를 자동 계산했어요!');
+}
+
+function exportData() {
+  const payload = {
+    deltas: getDeltas(),
+    feedbacks: getFeedbacks(),
+    exportedAt: new Date().toISOString(),
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `boom-data-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+}
+
+// ── SEND (streaming) ──
+async function sendMsg() {
   const inp = document.getElementById('chat-inp');
   const text = inp.value.trim();
-
   if (!text || isLoading) return;
 
   isLoading = true;
-
   document.getElementById('send-btn').disabled = true;
+  inp.value = ''; inp.style.height = 'auto';
 
   addUserMsg(text);
+  chatHistory.push({ role: 'user', content: text });
 
-  inp.value = '';
+  // 1. 장소 감지 (find로 첫 번째 매칭만)
+  const detectedKey = Object.keys(AREA_MAP).find(p => text.includes(p));
+  if (detectedKey) currentPlace = detectedKey;
 
   showTyping();
 
+  // 2. 서울시 실시간 데이터 fetch (장소 감지된 경우)
+  let seoulCtx = '';
+  if (detectedKey) {
+    const d = await fetchSeoulData(AREA_MAP[detectedKey]);
+    if (d) {
+      const delta = getDelta(detectedKey);
+      let corrected = d.congestion;
+      if (delta >= 0.4 && d.congestion !== '붐빔') corrected = d.congestion + ' (체감상 더 붐빔)';
+      if (delta <= -0.4) corrected = d.congestion + ' (체감상 더 여유)';
+
+      seoulCtx = `\n\n[서울시 실시간 데이터 — ${detectedKey}]
+혼잡도: ${corrected}
+혼잡도 안내: ${d.congestionMsg || '-'}
+인구 적은 시간대: ${d.minTime || '-'}
+인구 많은 시간대: ${d.maxTime || '-'}
+기온: ${d.temp ? d.temp + '°C' : '-'}${d.sensibleTemp ? ` (체감 ${d.sensibleTemp}°C)` : ''}
+풍속: ${d.windSpeed ? d.windSpeed + 'm/s' : '-'}
+강수: ${d.precipitation || '없음'}
+습도: ${d.humidity ? d.humidity + '%' : '-'}
+${delta !== 0 ? `사용자 보정계수 δ${delta >= 0 ? '+' : ''}${delta.toFixed(2)} 적용됨` : ''}
+${d.events.length ? '문화행사: ' + d.events.map(e => e.EVENT_NM).join(', ') : ''}
+대안 장소: ${(ALT_MAP[detectedKey] || []).join(', ')}
+추천 방문 시간대: ${BEST_TIME[detectedKey] || '-'}`;
+    } else {
+      seoulCtx = `\n\n[서울시 실시간 데이터 — ${detectedKey}]\n현재 실시간 데이터를 가져오지 못했어요. 일반적인 패턴 기반으로 안내해주세요.`;
+    }
+  }
+
+  // 3. Claude API 스트리밍
+  const systemPrompt = `너는 서울 나들이 도우미 챗봇 "Boom!"이야.
+
+핵심 역할:
+1. 서울 장소의 실시간 혼잡도, 날씨 기반 방문 조언, 팝업/맛집/데이트 코스 추천
+2. 혼잡하거나 붐빌 것 같으면 → 반드시 아래 세 가지 중 하나 이상 제안해줘:
+   - 덜 붐비는 시간대 ("오전 11시 이전이 훨씬 여유로워요")
+   - 비슷한 분위기의 대안 장소 ("성수 대신 연남동은 어떨까요?")
+   - 다른 날짜 추천
+3. 실시간 데이터가 있으면 구체적 수치를 자연스럽게 녹여줘
+4. 실시간 데이터가 없으면 일반적인 패턴과 웹서치로 보완해줘
+
+말투:
+- 친근하고 따뜻한 존댓말
+- 정보 나열 말고 대화처럼 자연스럽게
+- 이모지 1~2개, 4~6문장 내외
+- 마지막에 다음 질문이나 제안을 자연스럽게 유도`;
+
+  const messages = [
+    ...chatHistory.slice(0, -1),
+    { role: 'user', content: chatHistory[chatHistory.length - 1].content + seoulCtx }
+  ];
+
+  removeTyping();
+
   try {
-
-    let place = null;
-
-    Object.keys(AREA_MAP).forEach(p => {
-      if (text.includes(p)) {
-        place = p;
-      }
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        stream: true,
+        system: systemPrompt,
+        messages,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+      })
     });
 
-    currentPlace = place || '성수';
+    if (!res.ok || !res.body) throw new Error('stream error');
 
-    await new Promise(r => setTimeout(r, 1000));
+    const bubble = addBotMsg('');
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    let buffer = '';
 
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6);
+        if (data === '[DONE]') continue;
+        try {
+          const json = JSON.parse(data);
+          if (json.type === 'content_block_delta' && json.delta?.type === 'text_delta') {
+            fullText += json.delta.text;
+            bubble.innerHTML = fullText.replace(/\n/g, '<br>');
+            scrollChat();
+          }
+        } catch {}
+      }
+    }
+
+    if (fullText) {
+      chatHistory.push({ role: 'assistant', content: fullText });
+    } else {
+      bubble.innerHTML = '잠깐 다시 말씀해주세요 😅';
+    }
+
+  } catch (e) {
     removeTyping();
-
-    if (!place) {
-
-      addBotMsg(
-        `아직은 주요 서울 지역만 안내하고 있어요 😅<br><br>` +
-        `강남 / 성수 / 홍대 / 잠실 같은 장소로 질문해보세요!`
-      );
-
-      isLoading = false;
-      document.getElementById('send-btn').disabled = false;
-      return;
-    }
-
-    const areaName = AREA_MAP[place];
-
-    const realURL =
-      `http://openapi.seoul.go.kr:8088/${API_KEY}/json/citydata/1/5/${encodeURIComponent(areaName)}`;
-
-    const url =
-      'https://boom-beta.sh031300.workers.dev/?area=' +
-      encodeURIComponent(realURL);
-
-    const res = await fetch(url);
-
-    const data = await res.json();
-
-    console.log(data);
-
-    const city = data?.CITYDATA?.[0];
-
-    if (!city) {
-      addBotMsg(
-        `${place} 실시간 데이터를 아직 불러오지 못했어요 😢`
-      );
-
-      isLoading = false;
-      document.getElementById('send-btn').disabled = false;
-      return;
-    }
-
-    const rawCongestion =
-      city?.LIVE_PPLTN_STTS?.AREA_CONGEST_LVL || '정보없음';
-
-    const msg =
-      city?.LIVE_PPLTN_STTS?.AREA_CONGEST_MSG ||
-      '실시간 혼잡도 정보가 제공되지 않고 있어요';
-
-    const temp =
-      city?.WEATHER_STTS?.TEMP || '-';
-
-    const delta = getDelta(place);
-
-    let corrected = rawCongestion;
-
-    if (delta > 0.4 && !rawCongestion.includes('붐빔')) {
-      corrected = '체감상 더 붐빔';
-    }
-
-    if (delta < -0.4) {
-      corrected = '체감상 비교적 여유';
-    }
-
-    let recommendation = '';
-
-    if (
-      corrected.includes('붐빔') ||
-      corrected.includes('혼잡')
-    ) {
-
-      recommendation = `
-        현재는 꽤 붐비는 상태예요 😵<br><br>
-        추천 시간대:<br>
-        • 오전 11시 이전<br>
-        • 평일 저녁 이후<br><br>
-
-        대안 장소 추천:<br>
-        • ${ALT_MAP[place]} 추천드려요 ✨
-      `;
-    }
-    else {
-      recommendation =
-        '지금 방문하기 꽤 좋은 타이밍 같아요 😌';
-    }
-
-    addBotMsg(
-      `
-      <strong>${place}</strong> 실시간 안내예요 💥<br><br>
-
-      혼잡도: <strong>${corrected}</strong><br>
-      ${msg}<br><br>
-
-      현재 기온: ${temp}°C<br><br>
-
-      ${delta != 0
-        ? `※ 사용자 피드백 기반 보정계수 δ ${delta} 적용됨<br><br>`
-        : ''}
-
-      ${recommendation}
-      `
-    );
-
-  }
-  catch (e) {
-
-    console.error(e);
-
-    removeTyping();
-
-    addBotMsg(
-      '서울시 실시간 데이터를 불러오지 못했어요 😢<br><br>잠시 후 다시 시도해주세요.'
-    );
+    addBotMsg('연결이 잠깐 끊겼어요. 다시 시도해주세요 😅');
   }
 
   isLoading = false;
-
   document.getElementById('send-btn').disabled = false;
 }
 
+// ── INIT ──
 renderDelta();
+updateFbCount();
 
 addBotMsg(
   `안녕하세요 💥<br><br>` +
-  `Boom!은 서울시 실시간 혼잡도 데이터를 기반으로,<br>` +
+  `Boom!은 서울시 실시간 혼잡도 데이터를 기반으로<br>` +
   `지금 가장 쾌적한 시간과 장소를 추천해드려요.<br><br>` +
   `예를 들어:<br>` +
-  `• “성수 오늘 어때?”<br>` +
-  `• “홍대 지금 붐벼?”<br>` +
+  `• "성수 오늘 어때?"<br>` +
+  `• "홍대 지금 붐벼?"<br>` +
   `처럼 물어보세요 🙂`
 );
 
+document.getElementById('send-btn').addEventListener('click', sendMsg);
 
-document.getElementById('send-btn')
-.addEventListener('click', sendMsg);
-
-
-document.getElementById('chat-inp')
-.addEventListener('keydown', e => {
-
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMsg();
-  }
+document.getElementById('chat-inp').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
 });
 
+document.getElementById('chat-inp').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 140) + 'px';
+});
 
-document.querySelectorAll('.chip')
-.forEach(btn => {
-
+document.querySelectorAll('.chip').forEach(btn => {
   btn.addEventListener('click', () => {
-
-    document.getElementById('chat-inp').value =
-      btn.innerText;
-
+    document.getElementById('chat-inp').value = btn.innerText;
     sendMsg();
   });
 });
-
 </script>
-
 </body>
 </html>
